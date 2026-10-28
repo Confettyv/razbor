@@ -277,6 +277,7 @@ def main() -> None:
     p.add_argument("--port", type=int, default=int(os.environ.get("RAZBOR_PORT", "8097")))
     p.add_argument("--seed", type=Path)
     p.add_argument("--analyze-all", action="store_true")
+    p.add_argument("--recheck", action="store_true", help="пересчитать проверки без модели")
     a = p.parse_args()
     with closing(connect()) as db:
         if a.seed:
@@ -292,7 +293,16 @@ def main() -> None:
                         print("retry", rid, e)
                         time.sleep(2 + attempt * 3)
             print("analyzed", len(ids))
-    if a.seed or a.analyze_all:
+        if a.recheck:
+            rows = db.execute("select id, text, draft, kb from requests where draft is not null")
+            fixed = [
+                (json.dumps(checks.draft(t, d, json.loads(k or "[]")), ensure_ascii=False), i)
+                for i, t, d, k in rows.fetchall()
+            ]
+            db.executemany("update requests set checks=? where id=?", fixed)
+            db.commit()
+            print("rechecked", len(fixed))
+    if a.seed or a.analyze_all or a.recheck:
         return
     server = ThreadingHTTPServer(("127.0.0.1", a.port), Handler)
     print(f"razbor on 127.0.0.1:{a.port}", flush=True)
