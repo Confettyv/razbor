@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Разбор: спринт 1</title>
+<style>
+@page{size:960px 540px;margin:0}
+:root{--blue:#2457f5;--soft:#eef2ff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--red:#d92d20;--green:#067647}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,-apple-system,"SF Pro Text","Helvetica Neue",Arial,sans-serif;color:var(--ink);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.s{width:960px;height:540px;padding:44px 56px 36px;position:relative;overflow:hidden;page-break-after:always;display:flex;flex-direction:column}
+.s:last-child{page-break-after:auto}
+.k{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+h1{font-size:30px;line-height:1.18;font-weight:800;letter-spacing:-.01em;max-width:820px}
+h2{font-size:16px;font-weight:700;margin-bottom:6px}
+p,li{font-size:15px;line-height:1.45}
+.lead{font-size:16px;color:#344054;margin-top:14px;max-width:820px}
+.n{position:absolute;right:56px;bottom:28px;font-size:11px;color:var(--muted)}
+.src{position:absolute;left:56px;bottom:28px;font-size:10.5px;color:#98a2b3;max-width:760px}
+.row{display:flex;gap:16px;margin-top:22px}
+.card{background:var(--soft);border-radius:14px;padding:18px 20px;flex:1}
+.card.w{background:#fff;border:1px solid var(--line)}
+.big{font-size:34px;font-weight:800;color:var(--blue);line-height:1.05;margin-bottom:6px}
+.card p{font-size:13.5px;color:#344054}
+.num{width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;margin-top:18px}
+th,td{text-align:left;font-size:13.5px;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+td b{color:var(--blue)}
+ul{padding-left:18px}
+li{margin:4px 0}
+.shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(16,24,40,.08)}
+.shot img{display:block;width:100%}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:99px;background:#ecfdf3;color:var(--green)}
+.tag.p{background:#fff4e5;color:#b54708}
+.title{justify-content:center;background:linear-gradient(135deg,#fff 55%,var(--soft))}
+.title h1{font-size:56px}
+.title .lead{font-size:20px;max-width:640px}
+.links{margin-top:34px;font-size:14px;color:#344054;line-height:1.8}
+.links b{color:var(--blue);font-weight:600}
+.q{font-size:15px;line-height:1.45;background:#fff;border-left:3px solid var(--blue);padding:10px 14px;border-radius:0 10px 10px 0}
+</style>
+</head>
+<body>
+
+<section class="s title">
+  <div class="k">Академия Финтеха 2026 · Эффективность 360</div>
+  <h1>Разбор</h1>
+  <p class="lead">ИИ-диспетчер внутренних обращений вуза: сортирует, направляет в нужное подразделение и готовит черновик ответа по регламенту, а код проверяет черновик до отправки.</p>
+  <div class="links">Демо: <b>razbor.paira.ru</b> (логин для жюри в комментарии к загрузке)<br>Код: <b>github.com/Confettyv/razbor</b></div>
+</section>
+
+<section class="s">
+  <div class="k">Проблема</div>
+  <h1>Сотрудник сначала выясняет, чьё это обращение, и только потом отвечает</h1>
+  <div class="row">
+    <div class="card"><div class="big">4,66 млн</div><p>студентов в вузах России на 1 сентября 2025 года</p></div>
+    <div class="card"><div class="big">~750</div><p>вузов, из них около 490 государственных</p></div>
+    <div class="card"><div class="big">5+</div><p>каналов, куда пишут: почта, личный кабинет, мессенджеры, СДО, бумажные заявления</p></div>
+  </div>
+  <p class="lead">Обращения про справки, стипендию, пересдачи, общежитие и доступы приходят вперемешку. Их пересылают между учебным офисом, деканатом, бухгалтерией и IT, студент не получает ответа и пишет повторно, а руководитель не видит, какие причины повторяются.</p>
+  <div class="src">Источники: Минобрнауки России через дашборд НИУ ВШЭ «Индикаторы образования» (студенты, 2025); Минобрнауки через edu.sravni.ru (вузы, январь 2026).</div>
+  <div class="n">2</div>
+</section>
+
+<section class="s">
+  <div class="k">Работа, которую нанимают сделать (JTBD)</div>
+  <h1>Две стороны одного обращения</h1>
+  <div class="row">
+    <div class="card"><h2>Сотрудник учебного офиса или деканата</h2><p class="q">Когда приходит обращение, я хочу сразу понимать, чьё оно, насколько срочно и что ответить по регламенту, чтобы закрыть его за один подход и не пересылать по кругу.</p></div>
+    <div class="card"><h2>Студент или сотрудник вуза</h2><p class="q">Когда у меня горит срок, я хочу получить ответ с понятным следующим шагом, чтобы не писать второй раз и не ходить по кабинетам.</p></div>
+  </div>
+  <table>
+    <tr><th>Гипотеза</th><th>Как проверяем</th></tr>
+    <tr><td>Г1. На сортировку и поиск регламента уходит не меньше 30% времени ответа</td><td>Интервью, блок А: разбор последних 3 обращений</td></tr>
+    <tr><td>Г2. Каждое пятое обращение сначала попадает не туда</td><td>Интервью, блок А, и опрос: сколько раз пересылали</td></tr>
+    <tr><td>Г3. Половина обращений типовые и закрываются по регламенту</td><td>Интервью, блок А: доля обращений «по шаблону»</td></tr>
+    <tr><td>Г4. Студент ждёт ответа дольше 2 дней и пишет повторно</td><td>Опрос и интервью, блок Б</td></tr>
+  </table>
+  <div class="n">3</div>
+</section>
+
+<section class="s">
+  <div class="k">Интервью и CustDev</div>
+  <h1>Проверяем гипотезы на тех, кто отвечает, и тех, кто пишет</h1>
+  <div class="row">
+    <div class="card w"><div class="num">А</div><h2>Сотрудники вуза</h2><p>Учебный офис, деканат, стипендиальный отдел, IT-поддержка. Вопросы о прошлом опыте: последние обращения, сколько минут ушло, куда пересылали, где искали ответ.</p></div>
+    <div class="card w"><div class="num">Б</div><h2>Студенты и сотрудники</h2><p>Последний раз, когда писали в вуз: куда, через какой канал, сколько ждали, писали ли повторно, чем закончилось.</p></div>
+    <div class="card w"><div class="num">%</div><h2>Опрос 30+ человек</h2><p>Яндекс Формы: каналы, время ожидания, повторные обращения, самые частые темы. Ответы связываем с гипотезами Г1-Г4.</p></div>
+  </div>
+  <p class="lead">Записи интервью с согласием респондента, расшифровки и таблица ответов лежат в папке исследования (ссылка в загрузке). Сценарий и опрос открыты в репозитории, в папке research.</p>
+  <div class="n">4</div>
+</section>
+
+<section class="s">
+  <div class="k">Решение</div>
+  <h1>Разбор работает рядом с сотрудником, а не вместо него</h1>
+  <div class="row">
+    <div class="card"><div class="num">1</div><h2>Собирает</h2><p>Обращения из почты, личного кабинета, Telegram-бота и бумажных заявлений в одну очередь.</p></div>
+    <div class="card"><div class="num">2</div><h2>Сортирует</h2><p>Модель определяет тему, срочность, риск жалобы и причину обращения.</p></div>
+    <div class="card"><div class="num">3</div><h2>Направляет</h2><p>Обращение сразу попадает в нужное подразделение. Ошибку в разметке модели код исправляет сам.</p></div>
+    <div class="card"><div class="num">4</div><h2>Готовит ответ</h2><p>Черновик по регламенту вуза. Код проверяет его, сотрудник правит и отправляет.</p></div>
+  </div>
+  <p class="lead">Проверки кодом: нет заглушек и лишних обещаний, даты и суммы взяты из обращения или регламента, есть ссылка на регламент и следующий шаг для студента. Отправляет всегда человек.</p>
+  <div class="n">5</div>
+</section>
+
+<section class="s">
+  <div class="k">MVP: экран сотрудника</div>
+  <h1>Очередь, разбор и черновик на одном экране</h1>
+  <div style="display:flex;gap:22px;margin-top:18px;align-items:flex-start">
+    <div class="shot" style="flex:2.4"><img src="img/queue.png" alt="Очередь сотрудника"></div>
+    <ul style="flex:1;font-size:13.5px">
+      <li>Срочные и с риском жалобы наверху очереди</li>
+      <li>Причина обращения и подразделение, которое можно сменить</li>
+      <li>Шесть проверок черновика с пояснением</li>
+      <li>Факты регламента, на которые опирается ответ</li>
+      <li>Новое обращение разбирается за 5-7 секунд</li>
+    </ul>
+  </div>
+  <div class="n">6</div>
+</section>
+
+<section class="s">
+  <div class="k">MVP: панель руководителя</div>
+  <h1>Видно, о чём пишут и где копится очередь</h1>
+  <div style="display:flex;gap:22px;margin-top:18px;align-items:flex-start">
+    <div class="shot" style="flex:2.4"><img src="img/stats.png" alt="Панель руководителя"></div>
+    <ul style="flex:1;font-size:13.5px">
+      <li>Темы обращений и открытые по подразделениям</li>
+      <li>Срочные и с риском жалобы среди открытых</li>
+      <li>Повторяющиеся причины: что исправить в процессе, а не в каждом ответе</li>
+      <li>Метрики ценности считаются сами при каждой отправке ответа</li>
+    </ul>
+  </div>
+  <div class="n">7</div>
+</section>
+
+<section class="s">
+  <div class="k">Продуктовые метрики</div>
+  <h1>Меряем время сотрудника и качество черновика</h1>
+  <table>
+    <tr><th>Метрика</th><th>Как считается</th><th>Сейчас, демо</th><th>Цель пилота</th></tr>
+    <tr><td>Время от поступления до ответа</td><td>Отправка минус поступление, медиана</td><td>Считается в сервисе</td><td><b>-30%</b> к замеру до пилота</td></tr>
+    <tr><td>Черновики почти без правок</td><td>Совпадение отправленного ответа с черновиком от 85%</td><td>Считается при отправке</td><td><b>60%</b> ответов</td></tr>
+    <tr><td>Время сотрудника на ответ</td><td>Секунды с открытия обращения до отправки</td><td>Считается при отправке</td><td>Медиана до <b>2 минут</b></td></tr>
+    <tr><td>Переадресации</td><td>Сотрудник сменил подразделение, предложенное моделью</td><td>Считается при отправке</td><td>Меньше <b>10%</b></td></tr>
+    <tr><td>Черновики прошли проверки кодом</td><td>Все шесть проверок пройдены</td><td><b>55 из 60</b></td><td>от 90%</td></tr>
+    <tr><td>Скорость разбора</td><td>Ответ модели, медиана</td><td><b>5,8 с</b></td><td>до 10 с</td></tr>
+  </table>
+  <p class="lead" style="font-size:14px">Цели пилота проверяем замером на реальном потоке одного подразделения, а не обещаем заранее. Демо работает на 60 синтетических обращениях вымышленного вуза.</p>
+  <div class="n">8</div>
+</section>
+
+<section class="s">
+  <div class="k">Рынок и модель</div>
+  <h1>Подписка вуза, затем другие внутренние службы</h1>
+  <div class="row">
+    <div class="card"><h2>Рынок</h2><p>Около 750 вузов, из них около 490 государственных, и 4,66 млн студентов. Первые клиенты: вузы от 5 тыс. студентов без своей команды ИИ.</p></div>
+    <div class="card"><h2>Модель</h2><p>Подписка за вуз по числу рабочих мест сотрудников, которые отвечают на обращения. Гипотеза: 3 000 ₽ в месяц за место, 15-20 мест на вуз.</p></div>
+    <div class="card"><h2>Базовая оценка</h2><p>50 вузов по 20 мест: около 36 млн ₽ в год. Цену и число мест уточняем в интервью и на пилоте по сэкономленному времени.</p></div>
+  </div>
+  <p class="lead">Дальше тот же сервис нужен любой организации с потоком внутренних заявок: HR и бухгалтерия банков и холдингов, сервисные службы. Модель подключается через OpenAI-совместимый адрес, поэтому работает на российской или локальной модели внутри контура заказчика.</p>
+  <div class="src">Источники: Минобрнауки России (дашборд НИУ ВШЭ «Индикаторы образования», 2025; edu.sravni.ru, январь 2026). Цена и число мест: гипотеза команды.</div>
+  <div class="n">9</div>
+</section>
+
+<section class="s">
+  <div class="k">Зрелость и план</div>
+  <h1>Ядро уже работает, дальше пилот на реальном потоке</h1>
+  <div class="row">
+    <div class="card w"><span class="tag">Спринт 1, сделано</span><ul style="margin-top:10px;font-size:13.5px"><li>MVP в сети: очередь, разбор, проверки, панель</li><li>Открытый код и тесты</li><li>Сценарий интервью и опрос</li><li>Наш Telegram-сервис уже разбирает моделью 10 700+ сообщений из 8 источников за месяц</li></ul></div>
+    <div class="card w"><span class="tag p">Спринт 2</span><ul style="margin-top:10px;font-size:13.5px"><li>Маскирование персональных данных до отправки в модель</li><li>Запуск на российской или локальной модели</li><li>Приём писем из почты, роли сотрудников</li><li>Финансовая модель</li></ul></div>
+    <div class="card w"><span class="tag p">Спринт 3</span><ul style="margin-top:10px;font-size:13.5px"><li>Пилот в одном подразделении вуза на обезличенных данных</li><li>Замер до и после по метрикам слайда 8</li><li>Решение о цене по результатам замера</li></ul></div>
+  </div>
+  <div class="n">10</div>
+</section>
+
+</body>
+</html>
