@@ -41,6 +41,14 @@ def test_date_from_kb_is_allowed() -> None:
     assert names["Даты и суммы из источника"]
 
 
+def test_day_rule_allows_month_date() -> None:
+    answer = GOOD + " Стипендия должна была прийти до 25 октября."
+    names = {n: p for n, p, _ in checks.draft("Нет стипендии", answer, ["k1", "k5"])}
+    assert names["Даты и суммы из источника"]
+    names = {n: p for n, p, _ in checks.draft("Нет стипендии", answer + " Ждите 3 ноября.", ["k5"])}
+    assert not names["Даты и суммы из источника"]
+
+
 def test_no_kb_reference_flagged() -> None:
     names = {n: p for n, p, _ in checks.draft("Нужна справка", GOOD, ["k999"])}
     assert names["Опирается на регламент"] is False

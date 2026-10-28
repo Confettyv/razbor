@@ -13,3 +13,6 @@ ignore = ["E501"]
 
 [tool.mypy]
 strict = true
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

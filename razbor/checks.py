@@ -19,6 +19,7 @@ PROMISES = re.compile(
 )
 PLACEHOLDER = re.compile(r"\[[^\]]*\]|\{[^}]*\}|_{3,}|X{3,}|Х{3,}|TODO|<[^>]+>|\bФИО\b")
 DATE = re.compile(r"\b\d{1,2}[./]\d{1,2}(?:[./]\d{2,4})?\b|\b\d{1,2} (?:января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)\b", re.I)
+DAY_RULE = re.compile(r"\b(\d{1,2}) числа\b", re.I)
 MONEY = re.compile(r"\b\d[\d\s]*(?:₽|руб)", re.I)
 NEXT_STEP = re.compile(
     r"нужно|необходимо|можно|можете|сможете|рекоменд|подай|подать|закаж|заказыва|напиш|обрат"
@@ -51,9 +52,10 @@ def draft(text: str, answer: str, kb_ids: list[str]) -> list[Check]:
     out.append(("Опирается на регламент", bool(known), ", ".join(known) or "нет ссылки на базу знаний"))
 
     source = text + " " + kb_text(known)
-    new = (_numbers(DATE, answer) - _numbers(DATE, source)) | (
-        _numbers(MONEY, answer) - _numbers(MONEY, source)
-    )
+    # «до 25 числа» в регламенте разрешает «до 25 октября» в ответе
+    days = {m.group(1) for m in DAY_RULE.finditer(source)}
+    dates = {d for d in _numbers(DATE, answer) - _numbers(DATE, source) if d.split()[0] not in days}
+    new = dates | (_numbers(MONEY, answer) - _numbers(MONEY, source))
     out.append(("Даты и суммы из источника", not new, ", ".join(sorted(new)) or "чисто"))
 
     out.append(("Есть следующий шаг", bool(NEXT_STEP.search(answer)), "что делать студенту"))
