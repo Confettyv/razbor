@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Разбор</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#141a2b;--mute:#667085;--line:#e4e8f0;--blue:#2457f5;--soft:#eaf0ff;--red:#d92d20;--redsoft:#fdecea;--green:#079455;--greensoft:#e7f6ee;--amber:#b54708;--ambersoft:#fef3e2}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.bar{max-width:1240px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px}.logo svg{color:var(--blue)}
+nav{display:flex;gap:4px}nav button{border:0;background:none;padding:8px 12px;border-radius:8px;font:inherit;color:var(--mute);cursor:pointer}
+nav button.on{background:var(--soft);color:var(--blue);font-weight:600}
+.grow{flex:1}.btn{border:0;background:var(--blue);color:#fff;padding:9px 14px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+.btn.ghost{background:var(--soft);color:var(--blue)}.btn:disabled{opacity:.5;cursor:default}
+.note{max-width:1240px;margin:12px auto 0;padding:0 16px;color:var(--mute);font-size:13px}
+main{max-width:1240px;margin:0 auto;padding:12px 16px 40px}
+.queue{display:grid;grid-template-columns:380px 1fr;gap:16px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px}
+.list{max-height:calc(100vh - 170px);overflow:auto}
+.filters{display:flex;gap:8px;padding:12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);border-radius:12px 12px 0 0}
+select,textarea,input{font:inherit;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:#fff;color:var(--ink)}
+.filters select{flex:1;min-width:0}
+.row{padding:11px 12px;border-bottom:1px solid var(--line);cursor:pointer}.row:hover{background:#fafbff}.row.sel{background:var(--soft)}
+.row .top{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--mute);margin-bottom:3px;flex-wrap:wrap}
+.row .txt{font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.row.sent .txt{color:var(--mute)}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:2px 8px;border-radius:99px;background:#f0f2f6;color:#344054;white-space:nowrap}
+.chip.high{background:var(--redsoft);color:var(--red)}.chip.risk{background:var(--ambersoft);color:var(--amber)}
+.chip.ok{background:var(--greensoft);color:var(--green)}.chip.blue{background:var(--soft);color:var(--blue)}
+.detail{padding:18px}.detail h2{margin:0 0 4px;font-size:18px}.meta{color:var(--mute);font-size:13px;margin-bottom:12px}
+.text{white-space:pre-wrap;background:#f8f9fc;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.lbl{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 6px}
+.checks{list-style:none;margin:0;padding:0}.checks li{display:flex;gap:8px;align-items:flex-start;padding:4px 0;font-size:14px}
+.checks svg{flex:none;margin-top:2px}.checks small{color:var(--mute)}
+.kb{font-size:13px;color:#344054;background:#f8f9fc;border-left:3px solid var(--blue);padding:6px 10px;margin:4px 0;border-radius:0 6px 6px 0}
+textarea{width:100%;min-height:170px;resize:vertical}
+.actions{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.empty{padding:40px;text-align:center;color:var(--mute)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kpi{padding:14px}.kpi b{display:block;font-size:26px;line-height:1.2}.kpi span{color:var(--mute);font-size:13px}
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{padding:16px}.panel h3{margin:0 0 10px;font-size:15px}
+.hb{display:grid;grid-template-columns:170px 1fr 34px;gap:8px;align-items:center;font-size:13px;margin:5px 0}
+.hb i{display:block;height:10px;border-radius:5px;background:var(--blue)}.hb em{font-style:normal;text-align:right;color:var(--mute)}
+.days{display:flex;align-items:flex-end;gap:6px;height:110px;padding-top:6px}.days div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--mute)}
+.days i{display:block;width:100%;background:var(--blue);border-radius:4px 4px 0 0;min-height:2px}
+.reasons{font-size:13px}.reasons div{padding:6px 0;border-bottom:1px solid var(--line)}.reasons b{font-weight:600}
+.modal{position:fixed;inset:0;background:rgba(20,26,43,.4);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+.modal.on{display:flex}.modal .card{width:100%;max-width:560px;padding:18px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;display:none;z-index:10}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (max-width:860px){.queue{grid-template-columns:1fr}.list{max-height:none}.kpis{grid-template-columns:1fr 1fr}.panels,.grid2{grid-template-columns:1fr}.hb{grid-template-columns:120px 1fr 30px}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h6"/><path d="m16 16 2 2 4-4"/></svg>Разбор</div>
+  <nav><button data-tab="queue" class="on">Очередь оператора</button><button data-tab="stats">Панель руководителя</button></nav>
+  <div class="grow"></div>
+  <button class="btn" id="newBtn">Новое обращение</button>
+</div></header>
+<p class="note">Демо на синтетических обращениях вымышленного вуза. Модель определяет тему, срочность, риск жалобы и подразделение, готовит черновик; код проверяет черновик. Оператор правит и отправляет, панель считает, сколько черновика осталось без правок.</p>
+<main>
+  <section id="queue" class="queue">
+    <div class="card list">
+      <div class="filters"><select id="fDept"></select><select id="fStatus"><option value="open">Открытые</option><option value="sent">Отвеченные</option><option value="">Все</option></select></div>
+      <div id="rows"></div>
+    </div>
+    <div class="card" id="detail"><div class="empty">Выберите обращение слева</div></div>
+  </section>
+  <section id="stats" hidden></section>
+</main>
+<div class="modal" id="modal"><div class="card">
+  <h2 style="margin:0 0 10px;font-size:18px">Новое обращение</h2>
+  <p class="meta">Напишите обращение как студент или сотрудник вуза. Модель разберёт его за 5-15 секунд.</p>
+  <textarea id="newText" placeholder="Например: Здравствуйте, мне не пришла стипендия за октябрь, а 10 числа нужно платить за общежитие. Что делать?"></textarea>
+  <div class="actions"><button class="btn" id="newSend">Разобрать</button><button class="btn ghost" id="newCancel">Отмена</button><span id="newState" class="meta"></span></div>
+</div></div>
+<div class="toast" id="toast"></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const OK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#079455" stroke-width="2.6" stroke-linecap="round"><path d="m5 12 5 5 9-10"/></svg>';
+const BAD='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d92d20" stroke-width="2.6" stroke-linecap="round"><path d="M12 7v6M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg>';
+let META,LIST=[],CUR=null,OPENED=0;
+async function api(p,body){const r=await fetch(p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});const j=await r.json();if(!r.ok)throw new Error(j.error||r.status);return j}
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',3000)}
+function fmt(iso){const d=new Date(iso);return d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}
+function chips(r){let h='';if(r.urgency==='high')h+='<span class="chip high">Срочно</span>';if(r.risk)h+='<span class="chip risk">Риск жалобы</span>';if(r.status==='sent')h+='<span class="chip ok">Отвечено</span>';return h}
+async function load(){LIST=await api('/api/requests');rows()}
+function rows(){const d=$('#fDept').value,s=$('#fStatus').value;
+  const xs=LIST.filter(r=>(!d||r.dept===d)&&(!s||(s==='open'?r.status!=='sent':r.status==='sent')));
+  $('#rows').innerHTML=xs.map(r=>`<div class="row ${r.status} ${CUR&&CUR.id===r.id?'sel':''}" data-id="${r.id}"><div class="top">${chips(r)}<span>${esc(META.depts[r.dept]||'Не разобрано')}</span><span>·</span><span>${fmt(r.created)}</span></div><div class="txt">${esc(r.snippet)}</div></div>`).join('')||'<div class="empty">Пусто</div>'}
+async function open(id){CUR=await api('/api/requests/'+id);OPENED=Date.now();rows();detail()}
+function detail(){const r=CUR;if(!r)return;
+  const opts=Object.entries(META.depts).map(([k,v])=>`<option value="${k}" ${k===r.dept?'selected':''}>${esc(v)}</option>`).join('');
+  const sent=r.status==='sent';
+  $('#detail').innerHTML=`<div class="detail">
+  <h2>${esc(r.topic||'Не разобрано')}</h2>
+  <div class="meta">${esc(r.author)} · ${esc(r.channel)} · ${fmt(r.created)}${r.model_ms?' · разбор '+(r.model_ms/1000).toFixed(1)+' с':''}</div>
+  <div class="text">${esc(r.text)}</div>
+  ${r.status==='new'?'<button class="btn" id="an">Разобрать</button>':`
+  <div class="grid2"><div>
+    <div class="lbl">Разбор</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><span class="chip blue">${esc(META.urgency[r.urgency])}</span>${r.risk?'<span class="chip risk">Риск жалобы</span>':''}</div>
+    <div class="meta" style="margin:0">Причина: ${esc(r.reason)}</div>
+    <div class="lbl">Подразделение</div><select id="dept" ${sent?'disabled':''}>${opts}</select>
+    ${r.dept!==r.model_dept?`<div class="meta">Модель предлагала: ${esc(META.depts[r.model_dept])}</div>`:''}
+  </div><div>
+    <div class="lbl">Проверка черновика кодом</div>
+    <ul class="checks">${r.checks.map(([n,ok,t])=>`<li>${ok?OK:BAD}<span>${esc(n)}<br><small>${esc(t)}</small></span></li>`).join('')}</ul>
+  </div></div>
+  ${r.kb.length?`<div class="lbl">Ответ опирается на</div>${r.kb.map(k=>`<div class="kb">${esc(k.text)}</div>`).join('')}`:''}
+  ${(r.notes||[]).map(n=>`<div class="meta">${esc(n)}</div>`).join('')}
+  <div class="lbl">${sent?'Отправленный ответ':'Черновик ответа'}</div>
+  <textarea id="final" ${sent?'readonly':''}>${esc(sent?r.final:r.draft)}</textarea>
+  <div class="actions">${sent?`<span class="chip ok">Совпадение с черновиком ${Math.round(r.edit_ratio*100)}%</span><span class="meta">Время оператора ${r.work_s} с</span>`:'<button class="btn" id="send">Отправить ответ</button><button class="btn ghost" id="redo">Разобрать заново</button>'}</div>`}
+  </div>`;
+  const an=$('#an')||$('#redo');if(an)an.onclick=()=>reanalyze(an);
+  const s=$('#send');if(s)s.onclick=async()=>{s.disabled=true;try{await api(`/api/requests/${r.id}/send`,{final:$('#final').value,dept:$('#dept').value,work_s:Math.round((Date.now()-OPENED)/1000)});toast('Ответ отправлен');await load();await open(r.id)}catch(e){toast(e.message);s.disabled=false}}}
+async function reanalyze(b){b.disabled=true;b.innerHTML='<span class="spin"></span> Разбираю';try{CUR=await api(`/api/requests/${CUR.id}/analyze`,{});await load();detail()}catch(e){toast(e.message);b.disabled=false;b.textContent='Разобрать'}}
+function hbars(obj){const m=Math.max(1,...Object.values(obj));return Object.entries(obj).map(([k,v])=>`<div class="hb"><span>${esc(k)}</span><i style="width:${v/m*100}%"></i><em>${v}</em></div>`).join('')||'<div class="meta">Пока пусто</div>'}
+function pct(a,b){return b?Math.round(a/b*100)+'%':'—'}
+async function stats(){const s=await api('/api/stats');const dm=Math.max(1,...Object.values(s.days));
+  $('#stats').innerHTML=`<div class="kpis">
+  <div class="card kpi"><b>${s.total}</b><span>обращений за 10 дней</span></div>
+  <div class="card kpi"><b>${s.open}</b><span>ждут ответа</span></div>
+  <div class="card kpi"><b style="color:var(--red)">${s.high_open}</b><span>срочных среди открытых</span></div>
+  <div class="card kpi"><b style="color:var(--amber)">${s.risk_open}</b><span>с риском жалобы</span></div>
+  <div class="card kpi"><b>${pct(s.checks_ok,s.analyzed)}</b><span>черновиков прошли проверку кодом</span></div>
+  <div class="card kpi"><b>${pct(s.kept,s.sent)}</b><span>ответов отправлено почти без правок (из ${s.sent})</span></div>
+  <div class="card kpi"><b>${pct(s.rerouted,s.sent)}</b><span>оператор сменил подразделение</span></div>
+  <div class="card kpi"><b>${s.work_s!=null?s.work_s+' с':'—'}</b><span>медиана работы оператора над ответом</span></div></div>
+  <div class="panels">
+  <div class="card panel"><h3>О чём пишут</h3>${hbars(s.by_topic)}</div>
+  <div class="card panel"><h3>Открытые по подразделениям</h3>${hbars(s.by_dept_open)}</div>
+  <div class="card panel"><h3>Повторяющиеся причины</h3><div class="reasons">${Object.entries(s.reasons).sort((a,b)=>(s.by_topic[b[0]]||0)-(s.by_topic[a[0]]||0)).slice(0,6).map(([t,rs])=>`<div><b>${esc(t)}:</b> ${rs.map(esc).join('; ')}</div>`).join('')}</div></div>
+  <div class="card panel"><h3>Поток по дням</h3><div class="days">${Object.entries(s.days).map(([d,n])=>`<div><i style="height:${n/dm*80}px"></i>${d.slice(8)}.${d.slice(5,7)}</div>`).join('')}</div>
+  <p class="meta">Медиана разбора моделью: ${s.model_ms?(s.model_ms/1000).toFixed(1)+' с':'—'}. «Почти без правок» значит, что совпадение отправленного ответа с черновиком 85% и выше.</p></div>
+  </div>`}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));$('#queue').hidden=b.dataset.tab!=='queue';$('#stats').hidden=b.dataset.tab!=='stats';if(b.dataset.tab==='stats')stats()});
+$('#rows').onclick=e=>{const r=e.target.closest('.row');if(r)open(+r.dataset.id)};
+$('#fDept').onchange=$('#fStatus').onchange=rows;
+$('#newBtn').onclick=()=>{$('#modal').classList.add('on');$('#newText').focus()};
+$('#newCancel').onclick=()=>$('#modal').classList.remove('on');
+$('#newSend').onclick=async()=>{const b=$('#newSend');b.disabled=true;$('#newState').innerHTML='<span class="spin"></span> Модель разбирает';
+  try{const r=await api('/api/requests',{text:$('#newText').value,channel:'Форма',author:'Гость демо'});$('#modal').classList.remove('on');$('#newText').value='';await load();$('#fStatus').value='open';await open(r.id)}catch(e){toast(e.message)}finally{b.disabled=false;$('#newState').textContent=''}};
+(async()=>{META=await api('/api/meta');$('#fDept').innerHTML='<option value="">Все подразделения</option>'+Object.entries(META.depts).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join('');await load();const f=LIST.find(r=>r.status!=='sent');if(f&&innerWidth>860)open(f.id)})();
+</script>
+</body>
+</html>

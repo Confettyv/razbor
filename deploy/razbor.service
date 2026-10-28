@@ -1,0 +1,21 @@
+[Unit]
+Description=Razbor: dispatcher of internal requests (demo)
+After=network-online.target
+
+[Service]
+User=razbor
+WorkingDirectory=/opt/razbor
+EnvironmentFile=/etc/razbor.env
+Environment=RAZBOR_DB=/var/lib/razbor/razbor.sqlite3
+ExecStart=/usr/bin/python3 -m razbor.app
+Restart=always
+RestartSec=3
+StateDirectory=razbor
+MemoryMax=64M
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
